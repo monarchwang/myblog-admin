@@ -26,9 +26,18 @@
 		routers: ['blog', 'tag', 'storage']
 	  }
 	},
+	mounted (){
+	  let href = location.href;
+	  this.routers.map( (value, index) => {
+		if (href.indexOf(value) > 0) {
+		  this.activeIndex = (index + 1)+"" ;
+		  console.log(this.activeIndex)
+		}
+	  })
+	},
 	methods: {
 	  handleSelect(key, keyPath) {
-		this.$router.push(this.routers[key -1]);
+		this.$router.push(this.routers[key - 1]);
 
 	  }
 	}
