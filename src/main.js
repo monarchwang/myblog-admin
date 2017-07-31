@@ -1,27 +1,15 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
-import ElementUI from 'element-ui'
-import Blog from './pages/Blog.vue'
-import Tag from './pages/Tag.vue'
-import 'element-ui/lib/theme-default/index.css'
+import iView from 'iview'
+import 'iview/dist/styles/iview.css'
+import Routers from './routers'
 
-Vue.use(ElementUI);
+Vue.use(iView);
 Vue.use(VueRouter);
 let router = new VueRouter({
   mode: 'history',
-  routes: [
-	{
-	  path: '/',
-	  redirect: '/blog'
-	}, {
-	  path: '/blog',
-	  component: Blog
-	}, {
-	  path: '/tag',
-	  component: Tag
-	}
-  ]
+  routes: Routers
 });
 new Vue({
   el: '#app',

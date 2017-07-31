@@ -1,85 +1,95 @@
 <template>
-  <div id="app">
-
-	<el-menu theme="dark" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-	  <el-menu-item index="1">博客管理</el-menu-item>
-	  <el-menu-item index="2">标签管理</el-menu-item>
-	  <el-menu-item index="3">归档管理</el-menu-item>
-	  <el-menu-item index="4" class="f-r m-r-md">设置</el-menu-item>
-	</el-menu>
-
-	<div class="container">
-	  <router-view></router-view>
-	</div>
-
-
-  </div>
+    <div class="layout">
+        <Menu mode="horizontal" theme="light" :active-name="active" @on-select="handleSelect">
+            <div class="layout-logo"></div>
+            <div class="layout-nav">
+                <Menu-item name="blog">
+                    <Icon type="document-text"></Icon>
+                    博客管理
+                </Menu-item>
+                <Menu-item name="tags">
+                    <Icon type="ios-pricetags"></Icon>
+                    标签管理
+                </Menu-item>
+                <Menu-item name="statistics">
+                    <Icon type="ios-pie"></Icon>
+                    数据统计
+                </Menu-item>
+                <Menu-item name="setting">
+                    <Icon type="gear-b"></Icon>
+                    设置
+                </Menu-item>
+            </div>
+        </Menu>
+        <div class="layout-content">
+            <router-view></router-view>
+        </div>
+        <div class="layout-copy">
+            2011-2016 &copy; Monarchwang
+        </div>
+    </div>
 </template>
-
 <script>
-  export default {
-	name: 'app',
-	data () {
-	  return {
-		msg: 'Welcome to Your Vue.js App',
-		activeIndex: '1',
-		routers: ['blog', 'tag', 'storage']
-	  }
-	},
-	mounted (){
-	  let href = location.href;
-	  this.routers.map( (value, index) => {
-		if (href.indexOf(value) > 0) {
-		  this.activeIndex = (index + 1)+"" ;
-		  console.log(this.activeIndex)
-		}
-	  })
-	},
-	methods: {
-	  handleSelect(key, keyPath) {
-		this.$router.push(this.routers[key - 1]);
+    export default {
+        data(){
+            return {
+                active: ""
+            }
+        },
+        mounted (){
+            let href = location.href;
+            this.active = href.substring(href.lastIndexOf("/") + 1, href.length);
+        },
+        methods: {
+            handleSelect (name) {
+                this.$router.push(`/${name}`);
+            }
+        },
 
-	  }
-	}
-  }
+    }
 </script>
 
-<style lang="scss">
-  * {
-	margin: 0;
-	padding: 0;
-  }
+<style lang="scss" scoped>
+    .layout {
+        border: 1px solid #d7dde4;
+        background: #f5f7f9;
+        overflow-x: hidden;
 
-  #app {
-	.el-menu-demo {
-	  padding-left: 10%;
-	}
-	.container {
-	  width: 80%;
-	  border: solid 1px #ff00ff;
-	  height: 800px;
-	  margin: 0 auto;
-	}
+        .layout-logo {
+            width: 100px;
+            height: 30px;
+            background: #5b6270;
+            border-radius: 3px;
+            float: left;
+            position: relative;
+            top: 15px;
+            left: 20px;
+        }
+        .layout-nav {
+            width: 600px;
+            margin: 0 auto;
+        }
 
-  }
+        .layout-content {
+            min-height: 600px;
+            margin: 15px;
+            overflow: hidden;
+            background: #fff;
+            border-radius: 4px;
+            .layout-content-main {
+                padding: 10px;
+            }
 
-  .clearfix {
-	_zoom: 1;
-	&:after {
-	  content: '';
-	  clear: both;
-	  width: 0;
-	  height: 0;
-	  display: block;
-	  visibility: hidden;
-	}
-  }
+        }
 
-  .f-r {
-	float: right !important;
-  }
-
-  .m-r-md {
-	margin-right: 10% !important;
-  }
+        .layout-copy {
+            height: 60px;
+            text-align: center;
+            padding: 10px 0 20px;
+            color: #9ea7b4;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+    }
 </style>

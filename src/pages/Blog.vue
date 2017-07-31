@@ -1,102 +1,210 @@
 <template>
-  <div>
-
-
-	<el-table
-			:data="tableData"
-			style="width: 100%">
-	  <el-table-column
-			  prop="date"
-			  label="日期"
-			  width="180">
-	  </el-table-column>
-	  <el-table-column
-			  prop="name"
-			  label="姓名"
-			  width="180">
-	  </el-table-column>
-	  <el-table-column
-			  prop="address"
-			  label="地址">
-	  </el-table-column>
-	  <el-table-column label="操作">
-		<template scope="scope">
-		  <el-button
-				  size="small"
-				  @click="handleEdit(scope.$index, scope.row)">编辑
-		  </el-button>
-		  <el-button
-				  size="small"
-				  type="danger"
-				  @click="handleDelete(scope.$index, scope.row)">删除
-		  </el-button>
-		</template>
-	  </el-table-column>
-	</el-table>
-
-	<div class="pagination">
-	  <el-pagination
-			  @size-change="handleSizeChange"
-			  @current-change="handleCurrentChange"
-			  :current-page="currentPage4"
-			  :page-sizes="[100, 200, 300, 400]"
-			  :page-size="100"
-			  layout="total, sizes, prev, pager, next, jumper"
-			  :total="400">
-	  </el-pagination>
-	</div>
-  </div>
+    <div class="container">
+        <div class="blog-table">
+            <Table :data="tableData" :columns="tableColumns" stripe></Table>
+        </div>
+        <div class="pagination">
+            <div style="float: right;">
+                <Page :total="100" :current="1" @on-change="changePage"></Page>
+            </div>
+        </div>
+    </div>
 </template>
-
 <script>
-  export default {
-	data() {
-	  return {
-		name: 'blog',
-		tableData: [{
-		  date: '2016-05-02',
-		  name: '王小虎',
-		  address: '上海市普陀区金沙江路 1518 弄'
-		}, {
-		  date: '2016-05-04',
-		  name: '王小虎',
-		  address: '上海市普陀区金沙江路 1517 弄'
-		}, {
-		  date: '2016-05-01',
-		  name: '王小虎',
-		  address: '上海市普陀区金沙江路 1519 弄'
-		}, {
-		  date: '2016-05-03',
-		  name: '王小虎',
-		  address: '上海市普陀区金沙江路 1516 弄'
-		}],
-		currentPage1: 5,
-		currentPage2: 5,
-		currentPage3: 5,
-		currentPage4: 4
-	  }
-	},
-	methods: {
-	  handleEdit(index, row) {
-		console.log(index, row);
-	  },
-	  handleDelete(index, row) {
-		console.log(index, row);
-	  },
-	  handleSizeChange(val) {
-		console.log(`每页 ${val} 条`);
-	  },
-	  handleCurrentChange(val) {
-		console.log(`当前页: ${val}`);
-	  }
-	}
-  }
-</script>
+    export default {
+        data () {
+            return {
+                tableData: this.mockTableData(),
+                tableColumns: [
+                    {
+                        title: '名称',
+                        key: 'name'
+                    },
+                    {
+                        title: '状态',
+                        key: 'status',
+                        render: (h, params) => {
+                            const row = params.row;
+                            const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
+                            const text = row.status === 1 ? '构建中' : row.status === 2 ? '构建完成' : '构建失败';
 
+                            return h('Tag', {
+                                props: {
+                                    type: 'dot',
+                                    color: color
+                                }
+                            }, text);
+                        }
+                    },
+                    {
+                        title: '画像内容',
+                        key: 'portrayal',
+                        render: (h, params) => {
+                            return h('Poptip', {
+                                props: {
+                                    trigger: 'hover',
+                                    title: params.row.portrayal.length + '个画像',
+                                    placement: 'bottom'
+                                }
+                            }, [
+                                h('Tag', params.row.portrayal.length),
+                                h('div', {
+                                    slot: 'content'
+                                }, [
+                                    h('ul', this.tableData[params.index].portrayal.map(item => {
+                                        return h('li', {
+                                            style: {
+                                                textAlign: 'center',
+                                                padding: '4px'
+                                            }
+                                        }, item)
+                                    }))
+                                ])
+                            ]);
+                        }
+                    },
+                    {
+                        title: '选定人群数',
+                        key: 'people',
+                        render: (h, params) => {
+                            return h('Poptip', {
+                                props: {
+                                    trigger: 'hover',
+                                    title: params.row.people.length + '个客群',
+                                    placement: 'bottom'
+                                }
+                            }, [
+                                h('Tag', params.row.people.length),
+                                h('div', {
+                                    slot: 'content'
+                                }, [
+                                    h('ul', this.tableData[params.index].people.map(item => {
+                                        return h('li', {
+                                            style: {
+                                                textAlign: 'center',
+                                                padding: '4px'
+                                            }
+                                        }, item.n + '：' + item.c + '人')
+                                    }))
+                                ])
+                            ]);
+                        }
+                    },
+                    {
+                        title: '取样时段',
+                        key: 'time',
+                        render: (h, params) => {
+                            return h('div', '近' + params.row.time + '天');
+                        }
+                    },
+                    {
+                        title: '更新时间',
+                        key: 'update',
+                        render: (h, params) => {
+                            return h('div', this.formatDate(this.tableData[params.index].update));
+                        }
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, '查看'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, '删除')
+                            ]);
+                        }
+                    }
+                ]
+            }
+        },
+        methods: {
+            mockTableData () {
+                let data = [];
+                for (let i = 0; i < 10; i++) {
+                    data.push({
+                        name: '商圈' + Math.floor(Math.random() * 100 + 1),
+                        status: Math.floor(Math.random() * 3 + 1),
+                        portrayal: ['城市渗透', '人群迁移', '消费指数', '生活指数', '娱乐指数'],
+                        people: [
+                            {
+                                n: '客群' + Math.floor(Math.random() * 100 + 1),
+                                c: Math.floor(Math.random() * 1000000 + 100000)
+                            },
+                            {
+                                n: '客群' + Math.floor(Math.random() * 100 + 1),
+                                c: Math.floor(Math.random() * 1000000 + 100000)
+                            },
+                            {
+                                n: '客群' + Math.floor(Math.random() * 100 + 1),
+                                c: Math.floor(Math.random() * 1000000 + 100000)
+                            }
+                        ],
+                        time: Math.floor(Math.random() * 7 + 1),
+                        update: new Date()
+                    })
+                }
+                return data;
+            },
+            formatDate (date) {
+                const y = date.getFullYear();
+                let m = date.getMonth() + 1;
+                m = m < 10 ? '0' + m : m;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + m + '-' + d;
+            },
+            changePage () {
+                // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
+                this.tableData = this.mockTableData();
+            },
+            show (index) {
+                this.$Modal.info({
+                    title: '用户信息',
+                    content: `姓名：${this.tableData[index].name}<br>状态：${this.tableData[index].status}<br>画像内容：${this.tableData[index].portrayal}`
+                })
+            },
+            remove (index) {
+                this.tableData.splice(index, 1);
+            }
+        }
+    }
+</script>
 
 <style lang="scss" scoped>
 
-  .pagination{
-	margin: 2rem auto;
-  }
+    .container {
+        .blog-table{
+
+        }
+        .pagination {
+            margin: 1rem auto;
+        }
+    }
+
+
 </style>
