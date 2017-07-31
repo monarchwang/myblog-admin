@@ -87,9 +87,6 @@
             text-align: center;
             padding: 10px 0 20px;
             color: #9ea7b4;
-            width: 100%;
-            position: absolute;
-            bottom: 0;
         }
     }
 </style>
