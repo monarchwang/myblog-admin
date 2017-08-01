@@ -1,10 +1,21 @@
 <template>
-    <div class="container">
-
-        <router-view></router-view>
-
+    <div>
+        <Alert type="success" show-icon closable>
+            博客管理
+            <Icon type="ios-lightbulb-outline" slot="icon"></Icon>
+            <template slot="desc">在此处可以查看到所有博客列表，<a @click="gotoWriteBlog">点我创建</a>新博客</template>
+        </Alert>
+        <div class="blog-table">
+            <Table :data="tableData" :columns="tableColumns" stripe></Table>
+        </div>
+        <div class="pagination">
+            <div style="float: right;">
+                <Page :total="100" :current="1" @on-change="changePage"></Page>
+            </div>
+        </div>
     </div>
 </template>
+
 <script>
     export default {
         data () {
@@ -142,6 +153,7 @@
                 let data = [];
                 for (let i = 0; i < 10; i++) {
                     data.push({
+                        id: Math.floor(Math.random() * 100 + 1),
                         name: '商圈' + Math.floor(Math.random() * 100 + 1),
                         status: Math.floor(Math.random() * 3 + 1),
                         portrayal: ['城市渗透', '人群迁移', '消费指数', '生活指数', '娱乐指数'],
@@ -178,10 +190,7 @@
                 this.tableData = this.mockTableData();
             },
             show (index) {
-                this.$Modal.info({
-                    title: '用户信息',
-                    content: `姓名：${this.tableData[index].name}<br>状态：${this.tableData[index].status}<br>画像内容：${this.tableData[index].portrayal}`
-                })
+                this.$router.push(`/blog/${this.tableData[index].id}`);
             },
             remove (index) {
                 this.tableData.splice(index, 1);
@@ -194,10 +203,7 @@
 </script>
 
 <style lang="scss" scoped>
-
-    .container {
-
+    .pagination {
+        margin: 1rem auto;
     }
-
-
 </style>

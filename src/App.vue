@@ -19,6 +19,10 @@
                     <Icon type="gear-b"></Icon>
                     设置
                 </Menu-item>
+                <Menu-item name="writeblog">
+                    <Icon type="edit"></Icon>
+                    写博客
+                </Menu-item>
             </div>
         </Menu>
         <div class="layout-content">
@@ -74,7 +78,6 @@
             min-height: 600px;
             margin: 15px;
             overflow: hidden;
-            background: #fff;
             border-radius: 4px;
             .layout-content-main {
                 padding: 10px;
