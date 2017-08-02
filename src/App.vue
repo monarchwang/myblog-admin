@@ -48,9 +48,9 @@
             handleSelect (name) {
                 let href = location.href;
                 //点击同一标签页刷新页面
-                if (href.endsWith(name)){
+                if (href.endsWith("/" + name)) {
                     window.location.reload();
-                }else {
+                } else {
                     this.$router.push(`/${name}`);
                 }
             }
