@@ -11,6 +11,7 @@ let router = new VueRouter({
   mode: 'history',
   routes: Routers
 });
+
 new Vue({
   el: '#app',
   router,
