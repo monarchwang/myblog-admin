@@ -9,17 +9,20 @@
                 </div>
                 <div class="tags">
                     <template>
-                        <Tag v-for="item in blog.tags" :key="item" :name="item" closable @on-close="removeTag">{{ item }}</Tag>
-                        <Button icon="ios-plus-empty" type="dashed" size="small" @click="showSelectTagModel=true">添加标签</Button>
+                        <Tag v-for="item in blog.tags" :key="item" :name="item" closable @on-close="removeTag">{{ item
+                            }}
+                        </Tag>
+                        <Button icon="ios-plus-empty" type="dashed" size="small" @click="showAddTagModel">添加标签
+                        </Button>
                     </template>
                 </div>
                 <div class="content">
                     <div id="editor" style="min-height:450px;"></div>
                 </div>
                 <div class="options">
-                    <Button type="primary" icon="paper-airplane">发布</Button>
-                    <Button type="success" icon="ios-folder">保存</Button>
-                    <Button type="error" icon="ios-trash">取消</Button>
+                    <Button type="primary" @click="releaseBlog" icon="paper-airplane">发布</Button>
+                    <Button type="success" @click="saveBlog" icon="ios-folder">保存</Button>
+                    <Button type="error" @click="cancelWriteBlog" icon="ios-trash">取消</Button>
                 </div>
             </div>
         </Card>
@@ -35,7 +38,7 @@
 
 
             <Select v-model="blog.tags" filterable multiple>
-                <Option v-for="item in allTags" :value="item.label" :key="item.value">{{ item.label }}</Option>
+                <Option v-for="item in allTags" :value="item.name" :key="item.name">{{ item.name }}</Option>
             </Select>
 
             <div slot="footer">
@@ -47,7 +50,8 @@
 
 <script type="text/javascript">
     import WangEditor from 'wangeditor';
-    import Emotion from '../emotions'
+    import Emotion from '../emotions';
+    import Api from '../api/index';
     export default {
         name: 'WriteBlog',
         data () {
@@ -57,45 +61,23 @@
                 },
                 editor: '',  // 存放实例化的wangEditor对象，在多个方法中使用
                 blog: {
+                    id: -1,
                     title: '',
                     tags: [],
-                    content: ''
+                    content: '',
+                    brief: '',
+                    tagIds: [],
                 },
                 showSelectTagModel: false,
-                allTags: [
-                    {
-                        value: 'beijing',
-                        label: '北京市'
-                    },
-                    {
-                        value: 'shanghai',
-                        label: '上海市'
-                    },
-                    {
-                        value: 'shenzhen',
-                        label: '深圳市'
-                    },
-                    {
-                        value: 'hangzhou',
-                        label: '杭州市'
-                    },
-                    {
-                        value: 'nanjing',
-                        label: '南京市'
-                    },
-                    {
-                        value: 'chongqing',
-                        label: '重庆市'
-                    }
-                ],
+                allTags: [],
             }
         },
         mounted(){
             this.createEditor();
-            console.log("this.editor----->", this.editor)
+            this.getAvailableTags();
         },
         beforeDestroy(){
-            this.destoryEditor();
+            this.destroyEditor();
         },
         methods: {
             createEditor () {
@@ -104,7 +86,7 @@
                 this.editor.create();  // 生成编辑器
                 this.editor.$txt.html('<p>要初始化的内容</p>');  // 初始化内容
             },
-            destoryEditor (){
+            destroyEditor (){
                 if (this.editor) {
                     this.editor.destroy();
                     this.editor = null;
@@ -144,15 +126,79 @@
                 };
 
             },
-            getEditorContent(){  // 获取编辑器 内容区内容
-                this.editorContent = this.editor.$txt.html();  // 获取 html 格式
-                this.editor.$txt.text();  // 获取纯文本
-                this.editor.$txt.formatText();  // 获取格式化后的纯文本
-
+            getEditorContent(tag){  // 获取编辑器 内容区内容
+                if (!tag || tag === 'html') {
+                    return this.editor.$txt.html();  // 获取 html 格式
+                } else if (tag === 'txt') {
+                    return this.editor.$txt.formatText();
+                }
+            },
+            showAddTagModel(){
+                if (this.allTags && this.allTags.length > 0)
+                    this.showSelectTagModel = true;
+                else
+                    this.$Message.info("木有找到可用的标签哦~");
             },
             removeTag (event, name) {
                 const index = this.blog.tags.indexOf(name);
                 this.blog.tags.splice(index, 1);
+            },
+            getAvailableTags(){
+                Api.getAvailableTags().then(response => {
+                    this.allTags = response.data.rows;
+                }).catch(error => {
+                    this.$Message.error(error.message)
+                });
+            },
+            fillInBlog(){
+                this.blog.content = this.getEditorContent('html');
+                if (!this.blog.title && !this.blog.content.trim()) {
+                    this.$Message.error('啥也没有，搞个蛋蛋啊');
+                    return -1;
+                }
+                if (!this.blog.title.trim()) {
+                    this.$Message.error('骚年，忘了输标题吧');
+                    return -1;
+                }
+                if (!this.getEditorContent('txt').trim()) {
+                    this.$Message.error('小伙子，总得给点内容吧');
+                    return -1;
+                }
+                //设置文章简介
+                this.blog.brief = this.getEditorContent('txt').trim().substring(0, 150);
+                //设置标签id
+                this.allTags.map((val, index, arr) => {
+                    if (val && this.blog.tags.indexOf(val.name) >= 0) {
+                        this.blog.tagIds.push(val.id);
+                    }
+                });
+                return 0;
+            },
+            releaseBlog(){
+                if (this.fillInBlog() !== 0)
+                    return;
+                //发布博客
+                Api.releaseBlog(this.blog).then(response => {
+                    this.$Message.success('发布成功');
+                    this.blog.id = response.data;
+                }).catch(error => {
+                    this.$Message.error(error.message);
+                })
+
+
+            },
+            saveBlog(){
+                this.fillInBlog();
+                //保存博客
+                Api.saveBlog(this.blog).then(response => {
+                    this.$Message.success('保存成功');
+                    //保存成功后返回blog id
+                    this.blog.id = response.data;
+                })
+            },
+            cancelWriteBlog(){
+                //取消写博客
+
             }
         }
     }

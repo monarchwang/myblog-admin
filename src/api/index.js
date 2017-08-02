@@ -37,7 +37,7 @@ axios.interceptors.response.use((response) => {
     throw err
 
 }, (err) => {
-    console.log('进入了error------->',err);
+    console.log('进入了error------->', err);
     // 这里是返回状态码不为200时候的错误处理
     if (err && err.response) {
         switch (err.response.status) {
@@ -106,13 +106,30 @@ function config() {
  * 在发送之前，需要使用qs模块对其进行处理
  */
 export default {
+    //标签页
     createTag: function (data) {
         return axios.post('/tag/create', qs.stringify(data), config());
     },
     queryTag: function (pageNum, pageSize) {
         return axios.get(`/tag/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
     },
-    updateTag:function (data) {
-        return axios.post('/tag/update',qs.stringify(data),config());
+    updateTag: function (data) {
+        return axios.post('/tag/update', qs.stringify(data), config());
+    },
+    deleteTag: function (id) {
+        return axios.get(`/tag/delete?id=${id}`, config());
+    },
+    //博客编辑页面
+    getAvailableTags: function () {
+        return axios.get(`/tag/query?status=1`, config());
+    },
+    releaseBlog: function (data) {
+        data.type = 1;
+        return axios.post('/blog/saveOrUpdate', qs.stringify(data), config());
+    },
+    saveBlog: function (data) {
+        data.type = 0;
+        return axios.post('/blog/saveOrUpdate', qs.stringify(data), config());
     }
+
 }
