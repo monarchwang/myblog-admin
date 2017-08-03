@@ -17,23 +17,27 @@
 </template>
 
 <script>
+    import Api from '../api/index'
     export default {
         data () {
             return {
-                tableData: this.mockTableData(),
+                tableData: [],
                 tableColumns: [
                     {
-                        title: '名称',
-                        key: 'name'
+                        title: '标题',
+                        key: 'title'
+                    },
+                    {
+                        title: '简介',
+                        key: 'brief'
                     },
                     {
                         title: '状态',
                         key: 'status',
                         render: (h, params) => {
                             const row = params.row;
-                            const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
-                            const text = row.status === 1 ? '构建中' : row.status === 2 ? '构建完成' : '构建失败';
-
+                            const color = row.status === 0 ? 'blue' : 'green';
+                            const text = row.status === 0 ? '草稿' : '已发布';
                             return h('Tag', {
                                 props: {
                                     type: 'dot',
@@ -43,72 +47,16 @@
                         }
                     },
                     {
-                        title: '画像内容',
-                        key: 'portrayal',
-                        render: (h, params) => {
-                            return h('Poptip', {
-                                props: {
-                                    trigger: 'hover',
-                                    title: params.row.portrayal.length + '个画像',
-                                    placement: 'bottom'
-                                }
-                            }, [
-                                h('Tag', params.row.portrayal.length),
-                                h('div', {
-                                    slot: 'content'
-                                }, [
-                                    h('ul', this.tableData[params.index].portrayal.map(item => {
-                                        return h('li', {
-                                            style: {
-                                                textAlign: 'center',
-                                                padding: '4px'
-                                            }
-                                        }, item)
-                                    }))
-                                ])
-                            ]);
-                        }
+                        title: '创建时间',
+                        key: 'createTime'
                     },
                     {
-                        title: '选定人群数',
-                        key: 'people',
-                        render: (h, params) => {
-                            return h('Poptip', {
-                                props: {
-                                    trigger: 'hover',
-                                    title: params.row.people.length + '个客群',
-                                    placement: 'bottom'
-                                }
-                            }, [
-                                h('Tag', params.row.people.length),
-                                h('div', {
-                                    slot: 'content'
-                                }, [
-                                    h('ul', this.tableData[params.index].people.map(item => {
-                                        return h('li', {
-                                            style: {
-                                                textAlign: 'center',
-                                                padding: '4px'
-                                            }
-                                        }, item.n + '：' + item.c + '人')
-                                    }))
-                                ])
-                            ]);
-                        }
+                        title: '浏览量',
+                        key: 'viewNum'
                     },
                     {
-                        title: '取样时段',
-                        key: 'time',
-                        render: (h, params) => {
-                            return h('div', '近' + params.row.time + '天');
-                        }
-                    },
-                    {
-                        title: '更新时间',
-                        key: 'update',
-                        render: (h, params) => {
-                            return h('div', this.formatDate(this.tableData[params.index].update));
-                        }
+                        title: '评论数',
+                        key: 'commentNum'
                     },
                     {
                         title: '操作',
@@ -127,7 +75,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.show(params.index)
+                                            this.showBlogDetail(params.index)
                                         }
                                     }
                                 }, '查看'),
@@ -145,37 +93,23 @@
                             ]);
                         }
                     }
-                ]
+                ],
+                totalNum: 0,
+                currentPage: 1,
+                pageSize: 10
             }
         },
+        mounted(){
+            this.queryData(this.currentPage);
+        },
         methods: {
-            mockTableData () {
-                let data = [];
-                for (let i = 0; i < 10; i++) {
-                    data.push({
-                        id: Math.floor(Math.random() * 100 + 1),
-                        name: '商圈' + Math.floor(Math.random() * 100 + 1),
-                        status: Math.floor(Math.random() * 3 + 1),
-                        portrayal: ['城市渗透', '人群迁移', '消费指数', '生活指数', '娱乐指数'],
-                        people: [
-                            {
-                                n: '客群' + Math.floor(Math.random() * 100 + 1),
-                                c: Math.floor(Math.random() * 1000000 + 100000)
-                            },
-                            {
-                                n: '客群' + Math.floor(Math.random() * 100 + 1),
-                                c: Math.floor(Math.random() * 1000000 + 100000)
-                            },
-                            {
-                                n: '客群' + Math.floor(Math.random() * 100 + 1),
-                                c: Math.floor(Math.random() * 1000000 + 100000)
-                            }
-                        ],
-                        time: Math.floor(Math.random() * 7 + 1),
-                        update: new Date()
-                    })
-                }
-                return data;
+            queryData (pageNum) {
+                Api.queryBlogList(pageNum, this.pageSize).then(response => {
+                    this.tableData = response.data.rows;
+                    this.totalNum = response.data.total;
+                }).catch(error => {
+                    this.$Message.error(error.message);
+                })
             },
             formatDate (date) {
                 const y = date.getFullYear();
@@ -186,10 +120,10 @@
                 return y + '-' + m + '-' + d;
             },
             changePage () {
-                // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
-                this.tableData = this.mockTableData();
+                this.currentPage = pageNum;
+                this.tableData = this.queryData(pageNum);
             },
-            show (index) {
+            showBlogDetail (index) {
                 this.$router.push(`/blog/${this.tableData[index].id}`);
             },
             remove (index) {

@@ -130,6 +130,12 @@ export default {
     saveBlog: function (data) {
         data.type = 0;
         return axios.post('/blog/saveOrUpdate', qs.stringify(data), config());
+    },
+    queryBlogList: function (pageNum, pageSize) {
+        return axios.get(`/blog/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
+    },
+    queryBlogDetail: function (blogId) {
+        return axios.get(`/blog/detail?blogId=${blogId}`, config());
     }
 
 }

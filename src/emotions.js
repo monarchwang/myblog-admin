@@ -1,8 +1,10 @@
 /**
  * Created by liang on 2017/7/31.
  */
-let emotion_path = "/src/assets/emotion/";
+// let emotion_path = "/src/assets/emotion/";
+let emotion_path = "http://monarchwang.oss-cn-shanghai.aliyuncs.com/emotions/";
 let emotions = {
+
 	"sina_emotion": [{
 		icon: "http://img.t.sinajs.cn/t35/style/images/common/face/ext/normal/7a/shenshou_thumb.gif",
 		value: "[草泥马]"
@@ -403,7 +405,10 @@ let emotions = {
 		"value": "哈哈120"
 	}],
 	"expression":[
-		{"icon":emotion_path+"expression/1.jpg","value":"你完了"}
+		{"icon":emotion_path+"expression/1.gif","value":"得意"},
+		{"icon":emotion_path+"expression/2.gif","value":"得意"},
+		{"icon":emotion_path+"expression/3.gif","value":"得意"},
+		{"icon":emotion_path+"expression/4.gif","value":"得意"}
 	]
 };
 

@@ -165,7 +165,7 @@
 				});
 			},
 			changePage (pageNum) {
-				this.pageNum = pageNum;
+				this.currentPage = pageNum;
 				this.tableData = this.queryData(pageNum);
 			},
 			showTagDetail (index) {
@@ -175,7 +175,7 @@
 				})
 			},
 			disableTag(index){
-				//TODO 启用或禁用tag
+				// 启用或禁用tag
 				let number = this.tableData[index].status;
 				let id = this.tableData[index].id;
 				let status = -1;

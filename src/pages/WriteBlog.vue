@@ -57,7 +57,7 @@
         data () {
             return {
                 dataInterface: {
-                    editorUpImgUrl: 'http://xxxx'  // 编辑器插入的图片上传地址
+                    editorUpImgUrl: 'http://localhost:9090/blog/upload'  // 编辑器插入的图片上传地址
                 },
                 editor: '',  // 存放实例化的wangEditor对象，在多个方法中使用
                 blog: {
@@ -119,7 +119,7 @@
                 ];
                 this.editor.config.menuFixed = false;
                 this.editor.config.uploadImgUrl = this.dataInterface.editorUpImgUrl;  // 图片上传地址
-                this.editor.config.uploadImgFileName = '_img';  // 统一指定上传的文件name，需要指定。否则默认不同的上传方式是不同的name
+                this.editor.config.uploadImgFileName = 'file';  // 统一指定上传的文件name，需要指定。否则默认不同的上传方式是不同的name
                 const usersecret = window.localStorage.getItem('usersecret');  // 获取 usersecret
                 this.editor.config.uploadParams = {  // 自定义上传参数配置
                     usersecret: usersecret
