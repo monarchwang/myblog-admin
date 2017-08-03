@@ -25,11 +25,12 @@
                 tableColumns: [
                     {
                         title: '标题',
-                        key: 'title'
+                        key: 'title',
                     },
                     {
                         title: '简介',
-                        key: 'brief'
+                        key: 'brief',
+                        width: 600
                     },
                     {
                         title: '状态',
@@ -52,11 +53,18 @@
                     },
                     {
                         title: '浏览量',
-                        key: 'viewNum'
+                        key: 'viewNumber'
                     },
                     {
                         title: '评论数',
-                        key: 'commentNum'
+                        key: 'commentNumber'
+                    },
+                    {
+                        title: '标签',
+                        key: 'tags',
+                        render: (h, params) => {
+                            return h('div', {}, params.row.tags.join(","))
+                        }
                     },
                     {
                         title: '操作',
@@ -95,7 +103,7 @@
                     }
                 ],
                 totalNum: 0,
-                currentPage: 1,
+                currentPage: 0,
                 pageSize: 10
             }
         },

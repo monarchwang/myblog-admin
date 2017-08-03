@@ -29,7 +29,7 @@
             <router-view></router-view>
         </div>
         <div class="layout-copy">
-            2011-2016 &copy; Monarchwang
+            1994-2017 &copy; Monarchwang
         </div>
     </div>
 </template>
@@ -61,9 +61,11 @@
 
 <style lang="scss" scoped>
     .layout {
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
+        background: #ffff;
+        color: #333;
         overflow-x: hidden;
+        border: none !important;
+
 
         .layout-logo {
             width: 100px;
@@ -92,7 +94,7 @@
         }
 
         .layout-copy {
-            height: 60px;
+            width: 100%;
             text-align: center;
             padding: 10px 0 20px;
             color: #9ea7b4;
