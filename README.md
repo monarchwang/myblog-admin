@@ -1,6 +1,6 @@
 # myblog-admin
 
-> A Vue.js project
+> 个人博客后台管理界面
 
 ## Build Setup
 
