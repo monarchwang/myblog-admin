@@ -75,6 +75,17 @@
         mounted(){
             this.createEditor();
             this.getAvailableTags();
+            let blogId  = this.$route.params.blogId;
+            if (blogId) {
+                //数据回显
+                Api.queryBlogDetail(blogId).then(response => {
+                    this.blog = response.data;
+                    console.log("this.blog------>",this.blog);
+                    this.editor.$txt.html(this.blog.content);
+                }).catch(error => {
+                    this.$Message.error(error.message);
+                })
+            }
         },
         beforeDestroy(){
             this.destroyEditor();
@@ -151,6 +162,9 @@
                 });
             },
             fillInBlog(){
+                delete this.blog.createTime;
+                delete this.blog.updateTime;
+
                 this.blog.content = this.getEditorContent('html');
                 if (!this.blog.title && !this.blog.content.trim()) {
                     this.$Message.error('啥也没有，搞个蛋蛋啊');
@@ -167,6 +181,8 @@
                 //设置文章简介
                 this.blog.brief = this.getEditorContent('txt').trim().substring(0, 150);
                 //设置标签id
+                if (!this.blog.tagIds)
+                    this.blog.tagIds =[];
                 this.allTags.map((val, index, arr) => {
                     if (val && this.blog.tags.indexOf(val.name) >= 0) {
                         this.blog.tagIds.push(val.id);
@@ -198,7 +214,7 @@
             },
             cancelWriteBlog(){
                 //取消写博客
-
+                this.$router.push('/blog')
             }
         }
     }

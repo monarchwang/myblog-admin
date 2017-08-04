@@ -9,9 +9,10 @@
             <div class="options">
                 <!--操作-->
                 <Button-group vertical>
-                    <Button v-if="blog.status ==0" type="ghost" icon="paper-airplane"></Button>
-                    <Button type="ghost" icon="edit"></Button>
-                    <Button type="ghost" icon="ios-trash"></Button>
+                    <Button v-if="blog.status ==0" @click="releaseBlog" type="ghost" icon="paper-airplane"></Button>
+                    <Button type="ghost" @click="editBlog" icon="edit"></Button>
+                    <Button type="ghost" @click="deleteBlog" icon="ios-trash"></Button>
+                    <Button type="ghost" @click="backToList" icon="ios-undo-outline"></Button>
                 </Button-group>
             </div>
             <div v-html="blog.content" class="content"></div>
@@ -37,8 +38,34 @@
             })
         },
         methods: {
-            hello () {
-                console.log('Hello');
+            backToList(){
+                this.$router.back();
+            },
+            editBlog(){
+                this.$router.push({name: 'writeblog', params: {blogId: this.blog.id}});
+            },
+            releaseBlog(){
+                Api.setBlogStatusRelease(this.$route.params.id).then(response => {
+                    this.blog = response.data;
+                    this.$Message.success('发布成功!');
+                    this.backToList();
+                }).catch(error => {
+                    this.$Message.error(error.message);
+                })
+            },
+            deleteBlog(){
+                this.$Modal.confirm({
+                    title: '系统提示',
+                    content: '<p>确认删除？</p>',
+                    onOk: () => {
+                        Api.deleteBlog(this.blog.id).then(response => {
+                            this.$Message.success('删除成功!');
+                            this.backToList();
+                        }).catch(error => {
+                            this.$Message.error(error.message);
+                        });
+                    }
+                });
             }
         }
     }
@@ -52,7 +79,7 @@
         position: relative;
         .options {
             position: fixed;
-            left:80%;
+            left: 80%;
         }
         .title {
             margin: 20px 0 0;

@@ -135,7 +135,13 @@ export default {
         return axios.get(`/blog/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
     },
     queryBlogDetail: function (blogId) {
-        return axios.get(`/blog/detail?blogId=${blogId}`, config());
+        return axios.get(`/blog/detail?articleId=${blogId}`, config());
+    },
+    deleteBlog: function (blogId) {
+        return axios.get(`/blog/delete?articleId=${blogId}`,config());
+    },
+    setBlogStatusRelease: function (blogId) {
+        return axios.get(`/blog/release?articleId=${blogId}`,config());
     }
 
 }

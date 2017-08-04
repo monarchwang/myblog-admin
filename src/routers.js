@@ -23,9 +23,11 @@ const routers = [
             }
         ]
     }, {
+        name: 'tags',
         path: '/tags',
         component: Tag
     }, {
+        name: "writeblog",
         path: '/writeblog',
         component: WriteBlog
     }

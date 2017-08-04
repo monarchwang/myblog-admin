@@ -8,9 +8,9 @@
         <div class="blog-table">
             <Table :data="tableData" :columns="tableColumns" stripe></Table>
         </div>
-        <div class="pagination">
+        <div class="pagination" v-show="totalNum > pageSize ">
             <div style="float: right;">
-                <Page :total="100" :current="1" @on-change="changePage"></Page>
+                <Page :total="totalNum" :current="1" @on-change="changePage"></Page>
             </div>
         </div>
     </div>
@@ -135,7 +135,19 @@
                 this.$router.push(`/blog/${this.tableData[index].id}`);
             },
             remove (index) {
-                this.tableData.splice(index, 1);
+                let blogId = this.tableData[index].id;
+                this.$Modal.confirm({
+                    title: '系统提示',
+                    content: '<p>确认删除？</p>',
+                    onOk: () => {
+                        Api.deleteBlog(blogId).then(response => {
+                            this.$Message.success('删除成功!');
+                            this.tableData.splice(index, 1);
+                        }).catch(error => {
+                            this.$Message.error(error.message);
+                        });
+                    }
+                });
             },
             gotoWriteBlog(){
                 this.$router.push('/writeblog')
