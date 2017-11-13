@@ -75,13 +75,16 @@
         mounted(){
             this.createEditor();
             this.getAvailableTags();
-            let blogId  = this.$route.params.blogId;
+            let blogId  = this.$route.params.id;
             if (blogId) {
                 //数据回显
                 Api.queryBlogDetail(blogId).then(response => {
                     this.blog = response.data;
-                    console.log("this.blog------>",this.blog);
+                    //数据非空处理
+                    this.blog.tags = this.blog.tags || []
+                    this.blog.tagIds = this.blog.tagIds || []
                     this.editor.$txt.html(this.blog.content);
+                    console.log(this.blog)
                 }).catch(error => {
                     this.$Message.error(error.message);
                 })
@@ -95,7 +98,7 @@
                 this.editor = new WangEditor('editor');
                 this.initEditorConfig();  // 初始化编辑器配置，在create之前
                 this.editor.create();  // 生成编辑器
-                this.editor.$txt.html('<p>要初始化的内容</p>');  // 初始化内容
+                this.editor.$txt.html('<p>你的指尖拥有改变世界的力量</p>');  // 初始化内容
             },
             destroyEditor (){
                 if (this.editor) {

@@ -6,31 +6,35 @@ import WriteBlog from './pages/WriteBlog.vue'
 
 
 const routers = [
-    {
-        path: '/',
-        redirect: '/blog'
-    }, {
-        path: '/blog',
-        component: Blog,
-        children: [
-            {
-                path: '/',
-                component: BlogList
-            },
-            {
-                path: ':id',
-                component: BlogDetail
-            }
-        ]
-    }, {
-        name: 'tags',
-        path: '/tags',
-        component: Tag
-    }, {
-        name: "writeblog",
-        path: '/writeblog',
-        component: WriteBlog
-    }
+	{
+		path: '/',
+		redirect: '/blog'
+	}, {
+		path: '/blog',
+		component: Blog,
+		children: [
+			{
+				path: '/',
+				component: BlogList
+			},
+			{
+				path: 'edit/:id',
+				component: WriteBlog
+			},
+			{
+				path: ':id',
+				component: BlogDetail
+			}
+		]
+	}, {
+		name: 'tags',
+		path: '/tags',
+		component: Tag
+	}, {
+		name: "writeblog",
+		path: '/writeblog',
+		component: WriteBlog
+	}
 ];
 
 export default routers;
