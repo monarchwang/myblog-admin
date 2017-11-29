@@ -2,9 +2,10 @@
  * Created by liang on 2017/8/1.
  */
 import axios from 'axios'
+
 const qs = require('querystring');
 
-const ROOT = (process.env.NODE_ENV === 'production') ? 'http://119.28.71.137:9090' : 'http://localhost:9090';
+const ROOT = (process.env.NODE_ENV === 'production') ? 'http://139.224.135.82:9090' : 'http://localhost:9090';
 
 // 拦截request,设置全局请求为ajax请求
 axios.interceptors.request.use((config) => {
@@ -101,6 +102,7 @@ function config() {
     }
     return base
 }
+
 /**
  * 由于axios默认发送数据时，数据格式是Request Payload，而并非我们常用的Form Data格式，
  * 在发送之前，需要使用qs模块对其进行处理
@@ -138,10 +140,11 @@ export default {
         return axios.get(`/blog/detail?articleId=${blogId}`, config());
     },
     deleteBlog: function (blogId) {
-        return axios.get(`/blog/delete?articleId=${blogId}`,config());
+        return axios.get(`/blog/delete?articleId=${blogId}`, config());
     },
     setBlogStatusRelease: function (blogId) {
-        return axios.get(`/blog/release?articleId=${blogId}`,config());
-    }
+        return axios.get(`/blog/release?articleId=${blogId}`, config());
+    },
+    ROOT
 
 }

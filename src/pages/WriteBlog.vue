@@ -52,12 +52,13 @@
     import WangEditor from 'wangeditor';
     import Emotion from '../emotions';
     import Api from '../api/index';
+
     export default {
         name: 'WriteBlog',
-        data () {
+        data() {
             return {
                 dataInterface: {
-                    editorUpImgUrl: 'http://localhost:9090/blog/upload'  // 编辑器插入的图片上传地址
+                    editorUpImgUrl: Api.ROOT + '/blog/upload'  // 编辑器插入的图片上传地址
                 },
                 editor: '',  // 存放实例化的wangEditor对象，在多个方法中使用
                 blog: {
@@ -72,10 +73,10 @@
                 allTags: [],
             }
         },
-        mounted(){
+        mounted() {
             this.createEditor();
             this.getAvailableTags();
-            let blogId  = this.$route.params.id;
+            let blogId = this.$route.params.id;
             if (blogId) {
                 //数据回显
                 Api.queryBlogDetail(blogId).then(response => {
@@ -90,23 +91,23 @@
                 })
             }
         },
-        beforeDestroy(){
+        beforeDestroy() {
             this.destroyEditor();
         },
         methods: {
-            createEditor () {
+            createEditor() {
                 this.editor = new WangEditor('editor');
                 this.initEditorConfig();  // 初始化编辑器配置，在create之前
                 this.editor.create();  // 生成编辑器
                 this.editor.$txt.html('<p>你的指尖拥有改变世界的力量</p>');  // 初始化内容
             },
-            destroyEditor (){
+            destroyEditor() {
                 if (this.editor) {
                     this.editor.destroy();
                     this.editor = null;
                 }
             },
-            initEditorConfig(){
+            initEditorConfig() {
                 // 初始化编辑器配置
 
                 this.editor.config.emotions = {
@@ -140,31 +141,31 @@
                 };
 
             },
-            getEditorContent(tag){  // 获取编辑器 内容区内容
+            getEditorContent(tag) {  // 获取编辑器 内容区内容
                 if (!tag || tag === 'html') {
                     return this.editor.$txt.html();  // 获取 html 格式
                 } else if (tag === 'txt') {
                     return this.editor.$txt.formatText();
                 }
             },
-            showAddTagModel(){
+            showAddTagModel() {
                 if (this.allTags && this.allTags.length > 0)
                     this.showSelectTagModel = true;
                 else
                     this.$Message.info("木有找到可用的标签哦~");
             },
-            removeTag (event, name) {
+            removeTag(event, name) {
                 const index = this.blog.tags.indexOf(name);
                 this.blog.tags.splice(index, 1);
             },
-            getAvailableTags(){
+            getAvailableTags() {
                 Api.getAvailableTags().then(response => {
                     this.allTags = response.data.rows;
                 }).catch(error => {
                     this.$Message.error(error.message)
                 });
             },
-            fillInBlog(){
+            fillInBlog() {
                 delete this.blog.createTime;
                 delete this.blog.updateTime;
 
@@ -185,7 +186,7 @@
                 this.blog.brief = this.getEditorContent('txt').trim().substring(0, 150);
                 //设置标签id
                 if (!this.blog.tagIds)
-                    this.blog.tagIds =[];
+                    this.blog.tagIds = [];
                 this.allTags.map((val, index, arr) => {
                     if (val && this.blog.tags.indexOf(val.name) >= 0) {
                         this.blog.tagIds.push(val.id);
@@ -193,7 +194,7 @@
                 });
                 return 0;
             },
-            releaseBlog(){
+            releaseBlog() {
                 if (this.fillInBlog() !== 0)
                     return;
                 //发布博客
@@ -206,7 +207,7 @@
 
 
             },
-            saveBlog(){
+            saveBlog() {
                 this.fillInBlog();
                 //保存博客
                 Api.saveBlog(this.blog).then(response => {
@@ -215,7 +216,7 @@
                     this.blog.id = response.data;
                 })
             },
-            cancelWriteBlog(){
+            cancelWriteBlog() {
                 //取消写博客
                 this.$router.push('/blog')
             }
