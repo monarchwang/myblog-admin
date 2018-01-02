@@ -58,7 +58,7 @@
         data() {
             return {
                 dataInterface: {
-                    editorUpImgUrl: Api.ROOT + '/blog/upload'  // 编辑器插入的图片上传地址
+                    editorUpImgUrl: Api.ROOT.substring(0, Api.ROOT.lastIndexOf("/")) + '/upload'  // 编辑器插入的图片上传地址
                 },
                 editor: '',  // 存放实例化的wangEditor对象，在多个方法中使用
                 blog: {
