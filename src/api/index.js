@@ -95,7 +95,8 @@ axios.interceptors.response.use((response) => {
 
 function config() {
     const base = {
-        baseURL: ROOT
+        baseURL: ROOT,
+        headers: {"Content-Type": "application/json"}
     };
     if (localStorage.getItem('user') && !base.headers) {
         base.headers = {Authorization: 'Bearer ' + localStorage.getItem('user').replace(/(^\")|(\"$)/g, '')};
@@ -110,13 +111,13 @@ function config() {
 export default {
     //标签页
     createTag: function (data) {
-        return axios.post('/tag/create', qs.stringify(data), config());
+        return axios.post('/tag/create', JSON.stringify(data), config());
     },
     queryTag: function (pageNum, pageSize) {
         return axios.get(`/tag/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
     },
     updateTag: function (data) {
-        return axios.post('/tag/update', qs.stringify(data), config());
+        return axios.post('/tag/update', JSON.stringify(data), config());
     },
     deleteTag: function (id) {
         return axios.get(`/tag/delete?id=${id}`, config());
@@ -127,11 +128,11 @@ export default {
     },
     releaseBlog: function (data) {
         data.type = 1;
-        return axios.post('/blog/saveOrUpdate', qs.stringify(data), config());
+        return axios.post('/blog/saveOrUpdate', JSON.stringify(data), config());
     },
     saveBlog: function (data) {
         data.type = 0;
-        return axios.post('/blog/saveOrUpdate', qs.stringify(data), config());
+            return axios.post('/blog/saveOrUpdate', JSON.stringify(data), config());
     },
     queryBlogList: function (pageNum, pageSize) {
         return axios.get(`/blog/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
