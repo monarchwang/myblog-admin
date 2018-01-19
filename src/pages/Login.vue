@@ -73,15 +73,16 @@
 <style lang="scss" scoped>
     .container {
         position: fixed;
-        z-index: 100;
+        z-index: 1000;
         top: 0;
         left: 0;
         bottom: 0;
+        right: 0;
         background-color: #f6f6f6;
         overflow: hidden;
         .main{
             width: 400px;
-            margin: 50px auto;
+            margin: 250px auto;
         }
     }
 
