@@ -1,19 +1,22 @@
 <template>
-    <Form ref="formInline" :model="formInline" :rules="ruleInline">
-        <FormItem prop="user">
-            <Input type="text" v-model="formInline.username" placeholder="Username">
-            <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
-        </FormItem>
-        <FormItem prop="password">
-            <Input type="password" v-model="formInline.password" placeholder="Password">
-            <Icon type="ios-locked-outline" slot="prepend"></Icon>
-            </Input>
-        </FormItem>
-        <FormItem>
-            <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
-        </FormItem>
-    </Form>
+    <div class="container">
+
+        <Form ref="formInline" :model="formInline" :rules="ruleInline">
+            <FormItem prop="user">
+                <Input type="text" v-model="formInline.username" placeholder="Username">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+                </Input>
+            </FormItem>
+            <FormItem prop="password">
+                <Input type="password" v-model="formInline.password" placeholder="Password">
+                <Icon type="ios-locked-outline" slot="prepend"></Icon>
+                </Input>
+            </FormItem>
+            <FormItem>
+                <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
+            </FormItem>
+        </Form>
+    </div>
 </template>
 <script>
     import Api from '../api/index'
@@ -63,3 +66,9 @@
         }
     }
 </script>
+<style lang="scss" scoped>
+    .container {
+        width: 60%;
+        margin: 50px auto;
+    }
+</style>
