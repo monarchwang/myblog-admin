@@ -12,7 +12,7 @@ let router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (!sessionStorage.getItem('accessToken')) {
+    if (!sessionStorage.getItem('accessToken') && to.name !== 'login') {
         next({
             path: '/login',
             query: { redirect: to.fullPath }

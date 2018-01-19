@@ -9,9 +9,11 @@ import Login from './pages/Login.vue'
 const routers = [
     {
         path: '/',
+        name:'home',
         redirect: '/blog'
     }, {
         path: '/blog',
+        name:'blog',
         component: Blog,
         children: [
             {

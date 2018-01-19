@@ -1,22 +1,26 @@
 <template>
-    <div class="container">
+    <transition name="slide">
 
-        <Form ref="formInline" :model="formInline" :rules="ruleInline">
-            <FormItem prop="user">
-                <Input type="text" v-model="formInline.username" placeholder="Username">
-                <Icon type="ios-person-outline" slot="prepend"></Icon>
-                </Input>
-            </FormItem>
-            <FormItem prop="password">
-                <Input type="password" v-model="formInline.password" placeholder="Password">
-                <Icon type="ios-locked-outline" slot="prepend"></Icon>
-                </Input>
-            </FormItem>
-            <FormItem>
-                <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
-            </FormItem>
-        </Form>
-    </div>
+        <div class="container">
+            <div class="main">
+                <Form ref="formInline" :model="formInline" :rules="ruleInline">
+                    <FormItem prop="user">
+                        <Input type="text" v-model="formInline.username" placeholder="Username">
+                        <Icon type="ios-person-outline" slot="prepend"></Icon>
+                        </Input>
+                    </FormItem>
+                    <FormItem prop="password">
+                        <Input type="password" v-model="formInline.password" placeholder="Password">
+                        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+                        </Input>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="primary" @click="handleSubmit('formInline')">Signin</Button>
+                    </FormItem>
+                </Form>
+            </div>
+        </div>
+    </transition>
 </template>
 <script>
     import Api from '../api/index'
@@ -29,7 +33,7 @@
                     password: ''
                 },
                 ruleInline: {
-                    user: [
+                    username: [
                         {required: true, message: 'Please fill in the user name', trigger: 'blur'}
                     ],
                     password: [
@@ -54,7 +58,7 @@
                             this.$Message.success('登陆成功!');
                             this.$router.push('/blog')
                         }).catch(err => {
-                            this.$Message.success('登陆失败!');
+                            this.$Message.error('登陆失败!');
                             console.log(err)
                         })
 
@@ -68,7 +72,24 @@
 </script>
 <style lang="scss" scoped>
     .container {
-        width: 60%;
-        margin: 50px auto;
+        position: fixed;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background-color: #f6f6f6;
+        overflow: hidden;
+        .main{
+            width: 400px;
+            margin: 50px auto;
+        }
+    }
+
+    .slide-enter-active, .slide-leave-active {
+        transition: all .3s;
+    }
+
+    .slide-enter, .slide-leave-to {
+        transform: translate3d(100%, 0, 0);
     }
 </style>
