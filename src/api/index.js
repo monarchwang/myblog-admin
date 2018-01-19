@@ -132,7 +132,7 @@ export default {
     },
     saveBlog: function (data) {
         data.type = 0;
-            return axios.post('/blog/saveOrUpdate', JSON.stringify(data), config());
+        return axios.post('/blog/saveOrUpdate', JSON.stringify(data), config());
     },
     queryBlogList: function (pageNum, pageSize) {
         return axios.get(`/blog/query?pageNum=${pageNum}&pageSize=${pageSize}`, config());
@@ -145,6 +145,9 @@ export default {
     },
     setBlogStatusRelease: function (blogId) {
         return axios.get(`/blog/release?articleId=${blogId}`, config());
+    },
+    login: function (data) {
+        return axios.post(`user/login`, JSON.stringify(data), config())
     },
     ROOT
 

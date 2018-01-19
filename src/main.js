@@ -8,11 +8,22 @@ import Routers from './routers'
 Vue.use(iView);
 Vue.use(VueRouter);
 let router = new VueRouter({
-  routes: Routers
+    routes: Routers
 });
 
+router.beforeEach((to, from, next) => {
+    if (!sessionStorage.getItem('accessToken')) {
+        next({
+            path: '/login',
+            query: { redirect: to.fullPath }
+        })
+    } else {
+        next()
+    }
+})
+
 new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
+    el: '#app',
+    router,
+    render: h => h(App)
 });
